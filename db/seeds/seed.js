@@ -1,5 +1,6 @@
 const db = require("../connection");
 const format = require("pg-format");
+const { convertTimestampToDate, createReference } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
@@ -75,14 +76,15 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const formattedArticles = articleData.map((article) => {
+        const convertedArticle = convertTimestampToDate(article);
         return [
-          article.title,
-          article.topic,
-          article.author,
-          article.body,
-          new Date(article.created_at * 100),
-          article.votes,
-          article.article_img_url,
+          convertedArticle.title,
+          convertedArticle.topic,
+          convertedArticle.author,
+          convertedArticle.body,
+          convertedArticle.created_at,
+          convertedArticle.votes,
+          convertedArticle.article_img_url,
         ];
       });
       console.log(formattedArticles);
@@ -91,12 +93,29 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         formattedArticles
       );
 
-      return db.query(insertedArticles).then((resultInsertedArticles) => {
-        console.log(resultInsertedArticles);
-      });
+      return db.query(insertedArticles);
     })
-    .then(() => {
-      db.query(`SELECT article_id, title FROM articles;`).then(() => {});
+    .then((resultInsertedArticles) => {
+      console.log(resultInsertedArticles.rows);
+      const articlesRefObject = createReference(resultInsertedArticles.rows);
+      const formattedComments = commentData.map((comment) => {
+        const convertedComments = convertTimestampToDate(comment);
+        return [
+          articlesRefObject[convertedComments.article_title],
+          convertedComments.body,
+          convertedComments.votes,
+          convertedComments.author,
+          convertedComments.created_at,
+        ];
+      });
+      const insertedComments = format(
+        `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *`,
+        formattedComments
+      );
+
+      return db.query(insertedComments).then((resultInsertedComments) => {
+        console.log(resultInsertedComments);
+      });
     });
 };
 module.exports = seed;
