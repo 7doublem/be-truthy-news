@@ -108,6 +108,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           convertedComments.created_at,
         ];
       });
+      console.log(formattedComments);
       const insertedComments = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *`,
         formattedComments
