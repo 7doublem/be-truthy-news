@@ -23,3 +23,38 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe("General errors", () => {
+  test("404: Responds with an error message 404: Not found", () => {
+    return request(app)
+      .get("/api/not-a-route")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not Found");
+      });
+  });
+});
+
+describe("GET /api/topics", () => {
+  // happy path
+  test("200: Responds with an array of all topics", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        expect(topics.length).toBe(3);
+        topics.forEach((topic) => {
+          expect(typeof topic.description).toBe("string");
+          expect(typeof topic.slug).toBe("string");
+          expect(typeof topic.img_url).toBe("string");
+        });
+      });
+  });
+  // sad path - incomplete`
+  // test("500: Responds with an error message 500: Internal Server Error", () => {
+  //   return request(app)
+  //   .get("/api/topics")
+  //   .expect(500)
+  //   .then()
+  // })
+});
