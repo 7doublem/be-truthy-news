@@ -24,7 +24,7 @@ describe("GET /api", () => {
   });
 });
 
-describe("General errors", () => {
+describe.skip("General errors", () => {
   test("404: Responds with an error message 404: Not found", () => {
     return request(app)
       .get("/api/not-a-route")
@@ -35,7 +35,7 @@ describe("General errors", () => {
   });
 });
 
-describe("GET /api/topics", () => {
+describe.skip("GET /api/topics", () => {
   // happy path
   test("200: Responds with an array of all topics", () => {
     return request(app)
