@@ -64,3 +64,42 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  // happy path
+  test("200: Responds with an article object by the article id", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.author).toBe("icellusedkars");
+        expect(article.title).toBe("Eight pug gifs that remind me of mitch");
+        expect(article.article_id).toBe(3);
+        expect(article.body).toBe("some gifs");
+        expect(article.topic).toBe("mitch");
+        expect(new Date(article.created_at).getTime()).toBe(1604394720000);
+        expect(article.votes).toBe(0);
+        expect(article.article_img_url).toBe(
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        );
+      });
+  });
+  // sad path
+  test("400: Responds with an error message 400: Bad Request for an incorrect article_id", () => {
+    return request(app)
+      .get("/api/articles/mitch")
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body.msg);
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid article_id that doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/789")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(`No article found for article_id: 789`);
+      });
+  });
+});
