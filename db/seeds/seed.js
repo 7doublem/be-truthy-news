@@ -87,7 +87,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           convertedArticle.article_img_url,
         ];
       });
-      console.log(formattedArticles);
       const insertedArticles = format(
         `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`,
         formattedArticles
@@ -96,7 +95,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(insertedArticles);
     })
     .then((resultInsertedArticles) => {
-      console.log(resultInsertedArticles.rows);
       const articlesRefObject = createReference(resultInsertedArticles.rows);
       const formattedComments = commentData.map((comment) => {
         const convertedComments = convertTimestampToDate(comment);
@@ -108,14 +106,13 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           convertedComments.created_at,
         ];
       });
-      console.log(formattedComments);
       const insertedComments = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *`,
         formattedComments
       );
 
       return db.query(insertedComments).then((resultInsertedComments) => {
-        console.log(resultInsertedComments);
+        //console.log(resultInsertedComments);
       });
     });
 };

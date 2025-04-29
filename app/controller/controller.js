@@ -1,5 +1,10 @@
+const { articleData } = require("../../db/data/test-data");
 const endpointsJson = require("../../endpoints.json");
-const { selectAllTopics, selectArticlesById } = require("../model/model");
+const {
+  selectAllTopics,
+  selectArticlesById,
+  selectAllArticles,
+} = require("../model/model");
 
 const getApi = (req, res, next) => {
   res.status(200).send({ endpoints: endpointsJson });
@@ -22,4 +27,18 @@ const getArticlesById = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getApi, getAllTopics, getArticlesById };
+const getAllArticles = (req, res, next) => {
+  return selectAllArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+module.exports = {
+  getApi,
+  getAllTopics,
+  getArticlesById,
+  getAllTopics,
+  getAllArticles,
+};
