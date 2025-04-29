@@ -5,6 +5,7 @@ const {
   getApi,
   getAllTopics,
   getArticlesById,
+  getAllArticles,
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -18,6 +19,9 @@ app.get("/api/topics", getAllTopics);
 // get articles by article id
 app.get("/api/articles/:article_id", getArticlesById);
 
+// get all articles
+app.get("/api/articles", getAllArticles);
+
 // 404 handler
 app.all("/*splat", (req, res) => {
   res.status(404).send({ msg: "Not Found" });
@@ -27,9 +31,7 @@ app.all("/*splat", (req, res) => {
 
 // 400 postgres error for invalid input
 app.use((err, req, res, next) => {
-  console.log(err, "error");
   if (err.code === "22P02") {
-    console.log(err);
     res.status(400).send({ msg: "Bad Request" });
   } else next(err);
 });
@@ -43,7 +45,6 @@ app.use((err, req, res, next) => {
 
 // 500 handler
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
 });
 

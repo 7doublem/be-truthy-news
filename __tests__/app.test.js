@@ -90,7 +90,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/mitch")
       .expect(400)
       .then(({ body }) => {
-        console.log(body.msg);
         expect(body.msg).toBe("Bad Request");
       });
   });
@@ -100,6 +99,35 @@ describe("GET /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe(`No article found for article_id: 789`);
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  // happy path
+  test("200: Responds with an array of all articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSorted({ descending: true });
+        articles.forEach((article) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
+        });
+        // article with comments
+        const article1 = articles.find((f) => f.article_id === 1);
+        expect(article1.comment_count).toBe(11);
+        // article without comments
+        const article13 = articles.find((f) => f.article_id === 13);
+        expect(article13.comment_count).toBe(0);
       });
   });
 });
