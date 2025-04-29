@@ -6,6 +6,7 @@ const {
   getAllTopics,
   getArticlesById,
   getAllArticles,
+  getCommentsByArticleId,
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -21,6 +22,9 @@ app.get("/api/articles/:article_id", getArticlesById);
 
 // get all articles
 app.get("/api/articles", getAllArticles);
+
+// get comments by article id
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
 // 404 handler
 app.all("/*splat", (req, res) => {
