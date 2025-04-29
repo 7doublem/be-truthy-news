@@ -131,3 +131,49 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  // happy path
+  test("200: Responds with an array of comments for the given article id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(11);
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+  test("200: Responds with an empty array for an article with no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(0);
+        expect(comments).toEqual([]);
+      });
+  });
+  // sad path
+  test("400: Responds with an error message 400: Bad Request for an incorrect article_id", () => {
+    return request(app)
+      .get("/api/articles/mitch/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid article_id that doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/789/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(`No article found for article_id: 789`);
+      });
+  });
+});
