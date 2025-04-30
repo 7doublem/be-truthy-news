@@ -98,7 +98,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/789")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe(`No article found for article_id: 789`);
+        expect(body.msg).toBe("Article Not Found");
       });
   });
 });
@@ -173,7 +173,88 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/789/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe(`No article found for article_id: 789`);
+        expect(body.msg).toBe(`Article Not Found`);
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  // happy path
+  test("201: Responds with newly posted comment", () => {
+    return request(app)
+      .post("/api/articles/11/comments")
+      .send({
+        username: "butter_bridge",
+        body: "I am commenting on this post from an airplane, does that make me a bird? Careful, Sam. Too much pondering and you'll wake up a cat, vaguely disappointed.",
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toMatchObject({
+          article_id: 11,
+          author: "butter_bridge",
+          body: "I am commenting on this post from an airplane, does that make me a bird? Careful, Sam. Too much pondering and you'll wake up a cat, vaguely disappointed.",
+          votes: 0,
+        });
+        expect(comment.comment_id).toEqual(expect.any(Number));
+        expect(comment.created_at).toEqual(expect.any(String));
+      });
+  });
+  //sad path
+  test("400: Responds with an error message 400: Bad Request for an incorrect article_id", () => {
+    return request(app)
+      .post("/api/articles/mitch/comments")
+      .send({
+        username: "butter_bridge",
+        body: "I am commenting on this post from an airplane, does that make me a bird? Careful, Sam. Too much pondering and you'll wake up a cat, vaguely disappointed.",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid article_id that doesn't exist", () => {
+    return request(app)
+      .post("/api/articles/789/comments")
+      .send({
+        username: "butter_bridge",
+        body: "I am commenting on this post from an airplane, does that make me a bird? Careful, Sam. Too much pondering and you'll wake up a cat, vaguely disappointed.",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article Not Found");
+      });
+  });
+  test("400: Responds with an error message 400: Bad Request for request body that is missing the required fields", () => {
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a username that does not exist in the users table", () => {
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send({
+        username: "silly_comms",
+        body: "I am commenting on this post from an airplane, does that make me a bird? Careful, Sam. Too much pondering and you'll wake up a cat, vaguely disappointed.",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username Not Found");
+      });
+  });
+  test("400: Responds with an error message 400: Bad Request for invalid data types in the request body", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        username: 99,
+        body: false,
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
       });
   });
 });
