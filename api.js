@@ -8,6 +8,7 @@ const {
   getAllArticles,
   getCommentsByArticleId,
   postNewComment,
+  patchArticleById
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -29,6 +30,9 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
 // post new comment to article
 app.post("/api/articles/:article_id/comments", postNewComment)
+
+// patch existing article by id
+app.patch("/api/articles/:article_id", patchArticleById)
 
 // 404 handler
 app.all("/*splat", (req, res) => {
