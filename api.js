@@ -10,6 +10,7 @@ const {
   postNewComment,
   patchArticleById,
   removeCommentById,
+  getAllUsers
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -37,6 +38,9 @@ app.patch("/api/articles/:article_id", patchArticleById);
 
 // delete comment by comment id
 app.delete("/api/comments/:comment_id", removeCommentById);
+
+// get all users
+app.get("/api/users", getAllUsers)
 
 // 404 handler
 app.all("/*splat", (req, res) => {
