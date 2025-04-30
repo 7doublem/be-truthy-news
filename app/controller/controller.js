@@ -1,4 +1,3 @@
-const { articleData } = require("../../db/data/test-data");
 const endpointsJson = require("../../endpoints.json");
 const {
   selectAllTopics,
@@ -6,6 +5,7 @@ const {
   selectAllArticles,
   selectCommentsByArticleId,
   insertComments,
+  updateArticleById,
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -55,6 +55,16 @@ const postNewComment = (req, res, next) => {
     })
     .catch(next);
 };
+
+const patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  return updateArticleById(inc_votes, article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
+};
 module.exports = {
   getApi,
   getAllTopics,
@@ -63,4 +73,5 @@ module.exports = {
   getAllArticles,
   getCommentsByArticleId,
   postNewComment,
+  patchArticleById,
 };
