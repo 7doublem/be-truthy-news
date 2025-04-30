@@ -17,7 +17,7 @@ const selectArticlesById = (article_id) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No article found for article_id: ${article_id}`,
+          msg: `Article Not Found`,
         });
       }
       const article = rows[0];
@@ -51,7 +51,7 @@ const selectCommentsByArticleId = (article_id) => {
       if (articleResult.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No article found for article_id: ${article_id}`,
+          msg: `Article Not Found`,
         });
       }
       return db
@@ -65,9 +65,58 @@ const selectCommentsByArticleId = (article_id) => {
         });
     });
 };
+
+const insertComments = (article_id, username, body) => {
+  if (isNaN(article_id) || !username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+
+  if (typeof username !== "string" || typeof body !== "string") {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then((articleResult) => {
+      if (articleResult.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Article Not Found",
+        });
+      }
+      return db
+        .query(`SELECT * FROM users where username = $1`, [username])
+        .then((usernameResult) => {
+          if (usernameResult.rows.length === 0) {
+            return Promise.reject({
+              status: 404,
+              msg: "Username Not Found",
+            });
+          }
+          return db
+            .query(
+              `INSERT INTO comments (article_id, author, body)
+    VALUES ($1, $2, $3)
+    RETURNING *`,
+              [article_id, username, body]
+            )
+            .then((commentResult) => {
+              console.log(commentResult.rows[0]);
+              return commentResult.rows[0];
+            });
+        });
+    });
+};
 module.exports = {
   selectAllTopics,
   selectArticlesById,
   selectAllArticles,
   selectCommentsByArticleId,
+  insertComments,
 };
