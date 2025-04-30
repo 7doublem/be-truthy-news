@@ -8,7 +8,8 @@ const {
   getAllArticles,
   getCommentsByArticleId,
   postNewComment,
-  patchArticleById
+  patchArticleById,
+  removeCommentById,
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -26,13 +27,16 @@ app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getAllArticles);
 
 // get comments by article id
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 // post new comment to article
-app.post("/api/articles/:article_id/comments", postNewComment)
+app.post("/api/articles/:article_id/comments", postNewComment);
 
 // patch existing article by id
-app.patch("/api/articles/:article_id", patchArticleById)
+app.patch("/api/articles/:article_id", patchArticleById);
+
+// delete comment by comment id
+app.delete("/api/comments/:comment_id", removeCommentById);
 
 // 404 handler
 app.all("/*splat", (req, res) => {
