@@ -33,9 +33,7 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### GET `/not-a-route`
 
-- Status: ???
-
----
+- 404: Route does not exist (e.g. `/mitch`)
 
 ## Available Routes
 
@@ -53,6 +51,7 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 - Bad `article_id` (e.g. `/dog`)
 - Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- Request body does not have the required fields (e.g. `{}`)
 - Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
 
 ### POST `/api/articles/:article_id/comments`
@@ -62,10 +61,6 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 - Request body does not have the required fields (e.g. `{}`)
 - Request body has invalid data types (e.g {`username`: `600`, `body`: `false`}")
 - Username does not exist in database (e.g. `username`: `silly_message`)
-
-### GET `/api/articles/:article_id/comments`
-
-- ???
 
 ### GET `/api/articles`
 
