@@ -318,3 +318,37 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  // happy path
+  test("204: Deletes comment by it's id, does not return content, but returns 404 when trying to get comment", () => {
+    return request(app)
+      .delete("/api/comments/4")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get("/api/comments/4")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not Found");
+          });
+      });
+  });
+  // sad path
+  test("400: Responds with an error message 400: Bad Request for an incorrect comment_id", () => {
+    return request(app)
+      .delete("/api/comments/comment")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid comment_id that doesn't exist", () => {
+    return request(app)
+      .delete("/api/comments/789")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment Not Found");
+      });
+  });
+});
