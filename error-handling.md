@@ -57,7 +57,11 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### POST `/api/articles/:article_id/comments`
 
-- ???
+- Bad `article_id` (e.g. `/dog`)
+- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- Request body does not have the required fields (e.g. `{}`)
+- Request body has invalid data types (e.g {`username`: `600`, `body`: `false`}")
+- Username does not exist in database (e.g. `username`: `silly_message`)
 
 ### GET `/api/articles/:article_id/comments`
 
