@@ -60,5 +60,15 @@
       "author": "butter_bridge",
       "created_at": "2025-04-30T14:59:39.440Z"
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an updated article object",
+    "exampleResponse": {
+        "article_title": "Living in the shadow of a great man",
+        "body": " I carry a log — yes. Is it funny to you? It is not to me.",
+        "votes": 0,
+        "author": "icellusedkars",
+        "created_at": 1582459260000
+    }
   }
 }
