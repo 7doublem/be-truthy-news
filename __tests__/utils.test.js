@@ -2,6 +2,7 @@ const { articleData } = require("../db/data/test-data");
 const {
   convertTimestampToDate,
   createReference,
+  checkExists,
 } = require("../db/seeds/utils");
 
 describe.skip("convertTimestampToDate", () => {
@@ -104,5 +105,18 @@ describe.skip("createReference", () => {
       [articleData[0].title]: articleData[0].article_id,
     });
     expect(result).toBeObject();
+  });
+});
+
+describe.skip("checkExists", () => {
+  test("Returns true when topic exists in the topics table", () => {
+    return checkExists("topics", "slug", "cats").then((result) => {
+      expect(result).toBe(true);
+    });
+  });
+  test("Rejects when the topic doesn't exist in the topics table", () => {
+    return checkExists("topics", "slug", "faketopic").catch((err) => {
+      expect(err).toEqual({ status: 404, msg: "Not Found" });
+    });
   });
 });
