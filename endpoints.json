@@ -88,5 +88,8 @@
   },
   "GET /api/articles (sorting query)": {
     "description": "serves an array of all articles sorted by appropriate article fields in ascending or descending order"
+  },
+  "GET /api/articles (topics query)": {
+    "description": "serves an array of all articles filtered by an existing topic"
   }
 }
