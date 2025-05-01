@@ -26,19 +26,50 @@ const selectArticlesById = (article_id) => {
     });
 };
 
-const selectAllArticles = () => {
-  return db
-    .query(
-      `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::int AS comment_count
+const selectAllArticles = (sort_by = "created_at", order = "desc") => {
+  const allowedSorts = [
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const allowedOrders = ["asc", "desc"];
+
+  if (!allowedSorts.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid Sort Field",
+    });
+  }
+
+  if (!allowedOrders.includes(order.toLowerCase())) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid Order Field",
+    });
+  }
+
+  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::int AS comment_count
         FROM articles
         LEFT JOIN comments
         ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+        GROUP BY articles.article_id`;
+
+  let sort_by_inc_cc;
+
+  if (sort_by === "comment_count") {
+    sort_by_inc_cc = "comment_count";
+  } else {
+    sort_by_inc_cc = `articles.${sort_by}`;
+  }
+
+  queryStr += ` ORDER BY ${sort_by_inc_cc} ${order.toUpperCase()}`;
+
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 const selectCommentsByArticleId = (article_id) => {
