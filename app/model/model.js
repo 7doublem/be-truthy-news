@@ -1,5 +1,5 @@
-const { promises } = require("supertest/lib/test");
 const db = require("../../db/connection");
+const { checkExists } = require("../../db/seeds/utils");
 
 const selectAllTopics = () => {
   return db.query(`SELECT * FROM topics`).then(({ rows }) => {
@@ -26,7 +26,7 @@ const selectArticlesById = (article_id) => {
     });
 };
 
-const selectAllArticles = (sort_by = "created_at", order = "desc") => {
+const selectAllArticles = (sort_by = "created_at", order = "desc", topic) => {
   const allowedSorts = [
     "title",
     "topic",
@@ -54,8 +54,16 @@ const selectAllArticles = (sort_by = "created_at", order = "desc") => {
   let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::int AS comment_count
         FROM articles
         LEFT JOIN comments
-        ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id`;
+        ON articles.article_id = comments.article_id`;
+
+  const queryValues = [];
+
+  if (topic) {
+    queryStr += ` WHERE articles.topic = $1`;
+    queryValues.push(topic);
+  }
+
+  queryStr += ` GROUP BY articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url`;
 
   let sort_by_inc_cc;
 
@@ -67,7 +75,14 @@ const selectAllArticles = (sort_by = "created_at", order = "desc") => {
 
   queryStr += ` ORDER BY ${sort_by_inc_cc} ${order.toUpperCase()}`;
 
-  return db.query(queryStr).then(({ rows }) => {
+  if (topic) {
+    return checkExists("topics", "slug", topic).then(() => {
+      return db.query(queryStr, queryValues).then(({ rows }) => {
+        return rows;
+      });
+    });
+  }
+  return db.query(queryStr, queryValues).then(({ rows }) => {
     return rows;
   });
 };
