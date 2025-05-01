@@ -369,3 +369,51 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/articles (sorting queries)", () => {
+  //happy path
+  test("200: Responds with an array of articles sorted by created_at in descending order (default)", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13)
+        expect(articles).toBeSorted("created_at", { descending: true });
+      });
+  });
+  test("200: Responds with an array of articles sorted by comment count in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count&order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13)
+        expect(articles).toBeSorted("comment_count", { ascending: true });
+      });
+  });
+  test("200: Responds with an array of articles sorted by votes in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=desc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13)
+        expect(articles).toBeSorted("votes", { descending: true });
+      });
+  });
+  // sad path
+  test("400: Responds with an error message 400 when trying to sort by an invalid column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=reactions&order=desc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Sort Field");
+      });
+  });
+  test("400: Responds with an error message 400 when trying to order by an invalid order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=downwards")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Order Field");
+      });
+  });
+});
