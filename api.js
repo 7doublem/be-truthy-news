@@ -10,7 +10,7 @@ const {
   postNewComment,
   patchArticleById,
   removeCommentById,
-  getAllUsers
+  getAllUsers,
 } = require("./app/controller/controller");
 
 app.use(express.json());
@@ -40,7 +40,7 @@ app.patch("/api/articles/:article_id", patchArticleById);
 app.delete("/api/comments/:comment_id", removeCommentById);
 
 // get all users
-app.get("/api/users", getAllUsers)
+app.get("/api/users", getAllUsers);
 
 // 404 handler
 app.all("/*splat", (req, res) => {
@@ -65,6 +65,7 @@ app.use((err, req, res, next) => {
 
 // 500 handler
 app.use((err, req, res, next) => {
+  console.log("SERVER ERROR:", err);
   res.status(500).send({ msg: "Internal Server Error" });
 });
 
