@@ -77,8 +77,6 @@ npm run seed-prod
 node listen.js
 ```
 
----
-
 ### 6. Run Tests
 
 ```bash
