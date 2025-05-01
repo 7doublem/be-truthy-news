@@ -7,7 +7,7 @@ const {
   insertComments,
   updateArticleById,
   deleteCommentById,
-  selectAllUsers
+  selectAllUsers,
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -32,7 +32,8 @@ const getArticlesById = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  return selectAllArticles()
+  const { sort_by, order } = req.query;
+  return selectAllArticles(sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })
@@ -78,10 +79,12 @@ const removeCommentById = (req, res, next) => {
 };
 
 const getAllUsers = (req, res, next) => {
-  return selectAllUsers().then((users) => {
-    res.status(200).send({users})
-  }).catch(next)
-}
+  return selectAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
+};
 module.exports = {
   getApi,
   getAllTopics,
@@ -92,5 +95,5 @@ module.exports = {
   postNewComment,
   patchArticleById,
   removeCommentById,
-  getAllUsers
+  getAllUsers,
 };
