@@ -377,7 +377,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13)
+        expect(articles.length).toBe(13);
         expect(articles).toBeSorted("created_at", { descending: true });
       });
   });
@@ -386,7 +386,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles?sort_by=comment_count&order=asc")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13)
+        expect(articles.length).toBe(13);
         expect(articles).toBeSorted("comment_count", { ascending: true });
       });
   });
@@ -395,7 +395,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles?sort_by=votes&order=desc")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13)
+        expect(articles.length).toBe(13);
         expect(articles).toBeSorted("votes", { descending: true });
       });
   });
@@ -414,6 +414,39 @@ describe("GET /api/articles (sorting queries)", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid Order Field");
+      });
+  });
+});
+
+describe("GET /api/articles (topic query)", () => {
+  // happy path
+  test("200: Responds with an array of articles filtered by a topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("200: Responds with an empty array when the topic exists but doesn't have any articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(0);
+        expect(articles).toEqual([]);
+      });
+  });
+  // sad path
+  test("404: Responds with an error message 404: Not Found for an invalid topic", () => {
+    return request(app)
+      .get("/api/articles?topic=chickensandos")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
       });
   });
 });
