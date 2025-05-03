@@ -5,7 +5,7 @@ const {
   checkExists,
 } = require("../db/seeds/utils");
 
-describe.skip("convertTimestampToDate", () => {
+describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
@@ -41,7 +41,7 @@ describe.skip("convertTimestampToDate", () => {
   });
 });
 
-describe.skip("createReference", () => {
+describe("createReference", () => {
   test("should return an empty object when passed an empty array", () => {
     const input = [];
     const result = createReference(input);
@@ -108,7 +108,7 @@ describe.skip("createReference", () => {
   });
 });
 
-describe.skip("checkExists", () => {
+describe("checkExists", () => {
   test("Returns true when topic exists in the topics table", () => {
     return checkExists("topics", "slug", "cats").then((result) => {
       expect(result).toBe(true);
