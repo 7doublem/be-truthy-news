@@ -4,6 +4,11 @@ const {
   createReference,
   checkExists,
 } = require("../db/seeds/utils");
+const db = require("../db/connection");
+
+afterAll(() => {
+  return db.end();
+});
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
