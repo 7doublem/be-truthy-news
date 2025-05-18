@@ -243,6 +243,35 @@ const selectUserByUsername = (username) => {
       return userResult.rows[0];
     });
 };
+
+const updateCommentById = (inc_votes, comment_id) => {
+  if (isNaN(comment_id) || typeof inc_votes !== "number") {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+
+  return db
+    .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+
+      return db
+        .query(
+          `
+          UPDATE comments
+          SET votes = votes + $1
+          WHERE comment_id = $2
+          RETURNING comment_id, body, votes, author, created_at;
+          `,
+          [inc_votes, comment_id]
+        )
+        .then((updateResult) => updateResult.rows[0]);
+    });
+};
 module.exports = {
   selectAllTopics,
   selectArticlesById,
@@ -253,4 +282,5 @@ module.exports = {
   deleteCommentById,
   selectAllUsers,
   selectUserByUsername,
+  updateCommentById,
 };

@@ -9,6 +9,7 @@ const {
   deleteCommentById,
   selectAllUsers,
   selectUserByUsername,
+  updateCommentById,
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -96,6 +97,16 @@ const getUserByUsername = (req, res, next) => {
     .catch(next);
 };
 
+const patchCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  return updateCommentById(inc_votes, comment_id)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getApi,
   getAllTopics,
@@ -108,4 +119,5 @@ module.exports = {
   removeCommentById,
   getAllUsers,
   getUserByUsername,
+  patchCommentById,
 };

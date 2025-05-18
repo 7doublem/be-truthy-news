@@ -112,5 +112,15 @@
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       "comment_count": 0
     }
+  },
+  "PATCH /api/comment/:comment_id": {
+    "description": "serves an updated comment object",
+    "exampleResponse": {
+      "article_title": "They're not exactly dogs, are they?",
+      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      "votes": 16,
+      "author": "butter_bridge",
+      "created_at": 1586179020000
+    }
   }
 }
