@@ -224,6 +224,25 @@ const selectAllUsers = () => {
     return rows;
   });
 };
+
+const selectUserByUsername = (username) => {
+  if (!isNaN(username)) {
+    return Promise.reject({ status: 400 });
+  }
+
+  return db
+    .query(
+      `SELECT * FROM users
+    WHERE username = $1`,
+      [username]
+    )
+    .then((userResult) => {
+      if (userResult.rows.length === 0) {
+        return Promise.reject({ status: 404 });
+      }
+      return userResult.rows[0];
+    });
+};
 module.exports = {
   selectAllTopics,
   selectArticlesById,
@@ -233,4 +252,5 @@ module.exports = {
   updateArticleById,
   deleteCommentById,
   selectAllUsers,
+  selectUserByUsername,
 };
