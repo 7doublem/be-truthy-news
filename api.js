@@ -7,30 +7,38 @@ app.use(express.json());
 // all API routes handled by apiRouter
 app.use("/api", apiRouter);
 
-// 404 handler
-app.all("/*splat", (req, res) => {
-  res.status(404).send({ msg: "Not Found" });
-});
+// error handlers
 
-// 400 and custom handlers
-
-// 400 postgres error for invalid input
+// 400: Postgres bad input
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad Request" });
-  } else next(err);
+    return res.status(400).send({ msg: "Bad Request" });
+  }
+  next(err);
 });
 
-//custom error
+// 400 & 404 handler with default messages
 app.use((err, req, res, next) => {
   if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
-  } else next(err);
+    const messages = {
+      400: "Bad Request",
+      404: "Not Found",
+    };
+    const msg = err.msg ?? messages[err.status] ?? "Error";
+    return res.status(err.status).send({ msg });
+  }
+  next(err);
 });
 
 // 500 handler
 app.use((err, req, res, next) => {
+  console.error(err);
   res.status(500).send({ msg: "Internal Server Error" });
+});
+
+// unmatched route handler
+app.use((req, res) => {
+  res.status(404).send({ msg: "Not Found" });
 });
 
 module.exports = app;
