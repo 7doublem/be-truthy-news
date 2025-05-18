@@ -72,7 +72,9 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### PATCH `/api/comments/:comment_id`
 
-- ???
+- Well formed `comment_id` that doesn't exist in the database (e.g. `/99999`)
+- Request body does not have the required fields (e.g. `{}`)
+- Request body has invalid data types (e.g {`inc_votes`: `yes`}")
 
 ### DELETE `/api/comments/:comment_id`
 
