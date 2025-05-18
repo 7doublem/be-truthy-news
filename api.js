@@ -1,46 +1,11 @@
 const express = require("express");
 const app = express();
-const db = require("./db/connection");
-const {
-  getApi,
-  getAllTopics,
-  getArticlesById,
-  getAllArticles,
-  getCommentsByArticleId,
-  postNewComment,
-  patchArticleById,
-  removeCommentById,
-  getAllUsers
-} = require("./app/controller/controller");
+const apiRouter = require("./routes/apiRouter");
 
 app.use(express.json());
 
-// get api
-app.get("/api", getApi);
-
-// get all topics
-app.get("/api/topics", getAllTopics);
-
-// get articles by article id
-app.get("/api/articles/:article_id", getArticlesById);
-
-// get all articles
-app.get("/api/articles", getAllArticles);
-
-// get comments by article id
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
-
-// post new comment to article
-app.post("/api/articles/:article_id/comments", postNewComment);
-
-// patch existing article by id
-app.patch("/api/articles/:article_id", patchArticleById);
-
-// delete comment by comment id
-app.delete("/api/comments/:comment_id", removeCommentById);
-
-// get all users
-app.get("/api/users", getAllUsers)
+// all API routes handled by apiRouter
+app.use("/api", apiRouter);
 
 // 404 handler
 app.all("/*splat", (req, res) => {
