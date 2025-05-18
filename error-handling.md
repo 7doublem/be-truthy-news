@@ -78,3 +78,9 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 - Bad `comment_id` (e.g. `/comment`)
 - Well formed `comment_id` that doesn't exist in the database (e.g. `/999999`)
+
+### GET `/api/users/:username`
+
+- Bad `username` (e.g. `/900`)
+- Well formed `username` that doesn't exist in the database
+

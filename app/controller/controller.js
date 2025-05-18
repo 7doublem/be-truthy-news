@@ -8,6 +8,7 @@ const {
   updateArticleById,
   deleteCommentById,
   selectAllUsers,
+  selectUserByUsername,
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -85,6 +86,16 @@ const getAllUsers = (req, res, next) => {
     })
     .catch(next);
 };
+
+const getUserByUsername = (req, res, next) => {
+  const { username } = req.params;
+  return selectUserByUsername(username)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getApi,
   getAllTopics,
@@ -96,4 +107,5 @@ module.exports = {
   patchArticleById,
   removeCommentById,
   getAllUsers,
+  getUserByUsername,
 };
