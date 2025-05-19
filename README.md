@@ -1,4 +1,6 @@
-# NC News API
+# Truthy News API
+
+## Truthy News™ © 2025 - Powered by 100% truthy news, no falsy headlines here.
 
 This is the backend project for a Reddit-style news application. This is a RESTful API built using Node.js, Express.js and PostgreSQL. It is designed to power a frontend news application. You can fetch articles, users, topics and comments and filter by topic or sort articles by things like date, author or votes.
 
@@ -28,8 +30,8 @@ This API interacts with a PostgreSQL database to offer:
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/be-nc-news.git
-cd be-nc-news
+git clone https://github.com/your-username/be-truthy-news.git
+cd be-truthy-news
 npm install
 ```
 
@@ -40,13 +42,13 @@ Before you can run the app locally, you need to create two `.env` files in the r
 #### `.env.development`
 
 ```
-PGDATABASE=nc_news
+PGDATABASE=truthy_news
 ```
 
 #### `.env.test`
 
 ```
-PGDATABASE=nc_news_test
+PGDATABASE=truthy_news_test
 ```
 
 Your app uses dotenv to read these files and set the environment variables automatically when you run it. This ensures the correct database is used when seeding or testing.
@@ -63,12 +65,6 @@ To seed the development database:
 
 ```bash
 npm run seed-dev
-```
-
-To run the production database:
-
-```bash
-npm run seed-prod
 ```
 
 ### 5. Run the server
