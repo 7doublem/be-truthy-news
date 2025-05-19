@@ -67,6 +67,12 @@ To seed the development database:
 npm run seed-dev
 ```
 
+To run the production database:
+
+```bash
+npm run seed-prod
+```
+
 ### 5. Run the server
 
 ```bash
