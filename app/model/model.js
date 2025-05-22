@@ -19,7 +19,7 @@ const selectArticlesById = (article_id) => {
     if (rows.length === 0) {
       return Promise.reject({
         status: 404,
-        msg: `Article Not Found`,
+        msg: "Oops! That article could not be found. It might have been deleted or never existed",
       });
     }
     return rows[0];
@@ -98,7 +98,7 @@ const selectCommentsByArticleId = (article_id) => {
       if (articleResult.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `Article Not Found`,
+          msg: "Oops! That article could not be found. It might have been deleted or never existed",
         });
       }
       return db
@@ -134,7 +134,7 @@ const insertComments = (article_id, username, body) => {
       if (articleResult.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Article Not Found",
+          msg: "Oops! That article could not be found. It might have been deleted or never existed",
         });
       }
       return db
@@ -178,7 +178,7 @@ const updateArticleById = (inc_votes, article_id) => {
       if (articleIdResult.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Article Not Found",
+          msg: "Oops! That article could not be found. It might have been deleted or never existed",
         });
       }
       return db
@@ -213,7 +213,7 @@ const deleteCommentById = (comment_id) => {
       if (result.rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Comment Not Found",
+          msg: "Oops! That comment could not be found. It might have been deleted or never existed",
         });
       }
     });

@@ -119,7 +119,9 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/789")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Article Not Found");
+        expect(body.msg).toBe(
+          "Oops! That article could not be found. It might have been deleted or never existed"
+        );
       });
   });
 });
@@ -194,7 +196,9 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/789/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe(`Article Not Found`);
+        expect(body.msg).toBe(
+          "Oops! That article could not be found. It might have been deleted or never existed"
+        );
       });
   });
 });
@@ -242,7 +246,9 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Article Not Found");
+        expect(body.msg).toBe(
+          "Oops! That article could not be found. It might have been deleted or never existed"
+        );
       });
   });
   test("400: Responds with an error message 400: Bad Request for request body that is missing the required fields", () => {
@@ -317,7 +323,9 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: -100 })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Article Not Found");
+        expect(body.msg).toBe(
+          "Oops! That article could not be found. It might have been deleted or never existed"
+        );
       });
   });
   test("400: Responds with an error message 400: Bad Request for request body that is missing the required fields", () => {
@@ -369,7 +377,9 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/789")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Comment Not Found");
+        expect(body.msg).toBe(
+          "Oops! That comment could not be found. It might have been deleted or never existed"
+        );
       });
   });
 });
