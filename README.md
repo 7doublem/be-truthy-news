@@ -9,7 +9,7 @@ This is the backend project for a Reddit-style news application. This is a RESTf
 ## Hosted Version
 
 You can try out the live API right now:
-**[https://nc-news-inse.onrender.com](https://nc-news-inse.onrender.com)**
+**[https://truthy-news.onrender.com](https://truthy-news.onrender.com)**
 
 ---
 
