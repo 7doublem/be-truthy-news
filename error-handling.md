@@ -71,3 +71,8 @@
 - Bad `username` (e.g. `/900`)
 - Well formed `username` that doesn't exist in the database
 
+### POST `/api/articles`
+
+- Request body does not have the required fields (e.g. `{}`)
+- Request body has invalid data types (e.g {`author`: `600`, `title`: `the`, `body`: `the`, `topic`: `cooking`, `article_img_url`: ``}")
+- Author or topic does not exist in database (e.g. `author`: `silly_message` / `topic`: `skydiving`)
