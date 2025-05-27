@@ -273,6 +273,55 @@ const updateCommentById = (inc_votes, comment_id) => {
         .then((updateResult) => updateResult.rows[0]);
     });
 };
+
+const insertArticle = (author, title, body, topic, article_img_url) => {
+  if (!author || !title || !body || !topic) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing one or more required fields",
+    });
+  }
+
+  if (
+    typeof author !== "string" ||
+    typeof title !== "string" ||
+    typeof body !== "string" ||
+    typeof topic !== "string"
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid data type for one or more fields",
+    });
+  }
+
+  const defaultImgUrl =
+    "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+
+  const finalImgUrl = article_img_url || defaultImgUrl;
+
+  return Promise.all([
+    checkExists("users", "username", author).catch(() => {
+      return Promise.reject({ status: 404, msg: "Author Not Found" });
+    }),
+    checkExists("topics", "slug", topic).catch(() => {
+      return Promise.reject({ status: 404, msg: "Topic Not Found" });
+    }),
+  ])
+    .then(() => {
+      return db.query(
+        `INSERT into articles (author, title, body, topic, article_img_url)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *`,
+        [author, title, body, topic, finalImgUrl]
+      );
+    })
+    .then(({ rows }) => {
+      const newArticle = rows[0];
+      newArticle.comment_count = 0;
+      return newArticle;
+    });
+};
+
 module.exports = {
   selectAllTopics,
   selectArticlesById,
@@ -284,4 +333,5 @@ module.exports = {
   selectAllUsers,
   selectUserByUsername,
   updateCommentById,
+  insertArticle,
 };

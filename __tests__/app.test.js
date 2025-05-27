@@ -569,3 +569,88 @@ describe("PATCH /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("POST /api/articles", () => {
+  // happy path
+  test("201: Responds with newly posted article", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "butter_bridge",
+        title: "Cookies, so many types",
+        body: "Cookies, the most scrumptious dessert there is. So many types, so many textures. I prefer the chewy and chocolately type cookies.",
+        topic: "paper",
+        article_img_url: "",
+      })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).toMatchObject({
+          author: "butter_bridge",
+          title: "Cookies, so many types",
+          body: "Cookies, the most scrumptious dessert there is. So many types, so many textures. I prefer the chewy and chocolately type cookies.",
+          topic: "paper",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          votes: 0,
+          comment_count: 0,
+        });
+        expect(article.article_id).toEqual(expect.any(Number));
+        expect(article.created_at).toEqual(expect.any(String));
+      });
+  });
+  //sad path
+  test("400: Responds with an error message 400: Bad Request for a request body that is missing one of the required fields", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing one or more required fields");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid author that doesn't exist in the database", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "silly_username",
+        title: "Cookies, so many types",
+        body: "Cookies, the most scrumptious dessert there is. So many types, so many textures. I prefer the chewy and chocolately type cookies.",
+        topic: "cooking",
+        article_img_url: "",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Author Not Found");
+      });
+  });
+  test("404: Responds with an error message 404: Not Found for a valid topic that doesn't exist in the database", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "butter_bridge",
+        title: "Cookies, so many types",
+        body: "Cookies, the most scrumptious dessert there is. So many types, so many textures. I prefer the chewy and chocolately type cookies.",
+        topic: "cookies",
+        article_img_url: "",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic Not Found");
+      });
+  });
+  test("400: Responds with an error message 400: Bad Request for request body that has one or more invalid data types", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: 600,
+        title: "Cookies, so many types",
+        body: "Cookies, the most scrumptious dessert there is. So many types, so many textures. I prefer the chewy and chocolately type cookies.",
+        topic: "cooking",
+        article_img_url: "",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid data type for one or more fields");
+      });
+  });
+});
