@@ -5,6 +5,7 @@ const {
   getCommentsByArticleId,
   postNewComment,
   patchArticleById,
+  postNewArticle
 } = require("../app/controller/controller");
 const articlesRouter = express.Router();
 
@@ -22,5 +23,8 @@ articlesRouter.post("/:article_id/comments", postNewComment);
 
 // patch existing article by article id
 articlesRouter.patch("/:article_id", patchArticleById);
+
+// post new article
+articlesRouter.post("/", postNewArticle);
 
 module.exports = articlesRouter;
