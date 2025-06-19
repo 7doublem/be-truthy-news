@@ -26,7 +26,13 @@ const selectArticlesById = (article_id) => {
   });
 };
 
-const selectAllArticles = (sort_by = "created_at", order = "desc", topic) => {
+const selectAllArticles = (
+  sort_by = "created_at",
+  order = "desc",
+  topic,
+  limit = 10,
+  page = 1
+) => {
   const allowedSorts = [
     "title",
     "topic",
@@ -51,7 +57,9 @@ const selectAllArticles = (sort_by = "created_at", order = "desc", topic) => {
     });
   }
 
-  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::int AS comment_count
+  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
+        COUNT(comments.article_id)::int AS comment_count,
+        COUNT(*) OVER()::int AS total_count
         FROM articles
         LEFT JOIN comments
         ON articles.article_id = comments.article_id`;
@@ -75,15 +83,25 @@ const selectAllArticles = (sort_by = "created_at", order = "desc", topic) => {
 
   queryStr += ` ORDER BY ${sort_by_inc_cc} ${order.toUpperCase()}`;
 
+  const offset = (page - 1) * limit;
+  queryStr += ` LIMIT $${queryValues.length + 1} OFFSET $${
+    queryValues.length + 2
+  }`;
+  queryValues.push(limit, offset);
+
   if (topic) {
     return checkExists("topics", "slug", topic).then(() => {
       return db.query(queryStr, queryValues).then(({ rows }) => {
-        return rows;
+        const total_count = rows[0] ? rows[0].total_count : 0;
+        const articles = rows.map(({ total_count, ...rest }) => rest);
+        return { articles, total_count };
       });
     });
   }
   return db.query(queryStr, queryValues).then(({ rows }) => {
-    return rows;
+    const total_count = rows[0] ? rows[0].total_count : 0;
+    const articles = rows.map(({ total_count, ...rest }) => rest);
+    return { articles, total_count };
   });
 };
 
