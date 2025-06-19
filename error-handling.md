@@ -76,3 +76,10 @@
 - Request body does not have the required fields (e.g. `{}`)
 - Request body has invalid data types (e.g {`author`: `600`, `title`: `the`, `body`: `the`, `topic`: `cooking`, `article_img_url`: ``}")
 - Author or topic does not exist in database (e.g. `author`: `silly_message` / `topic`: `skydiving`)
+
+### POST `/api/topics`
+
+- Request body does not have the required fields (e.g. `{}`)
+
+- Request body has invalid data types (e.g. `{ slug: 123, description: false, img_url: [] }`)
+- Duplicate slug (topic with this slug already exists)

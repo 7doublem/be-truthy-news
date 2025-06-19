@@ -185,5 +185,18 @@
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       "comment_count": 0
     }
+  },
+  "POST /api/topics": {
+    "description": "Posts a new topic and returns the created topic object. Requires 'slug', 'description', and 'img_url' in the request body.",
+    "exampleRequest": {
+      "slug": "test-topic",
+      "description": "A topic for testing purposes",
+      "img_url": "https://example.com/image.jpg"
+    },
+    "exampleResponse": {
+      "slug": "test-topic",
+      "description": "A topic for testing purposes",
+      "img_url": "https://example.com/image.jpg"
+    }
   }
 }
