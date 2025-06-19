@@ -11,6 +11,7 @@ const {
   selectUserByUsername,
   updateCommentById,
   insertArticle,
+  insertTopic
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -142,6 +143,15 @@ const postNewArticle = (req, res, next) => {
     .catch(next);
 };
 
+const postNewTopic = (req, res, next) => {
+  const { slug, description, img_url } = req.body;
+  return insertTopic(slug, description, img_url)
+    .then((topic) => {
+      res.status(201).send({ topic });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getApi,
   getAllTopics,
@@ -156,4 +166,5 @@ module.exports = {
   getUserByUsername,
   patchCommentById,
   postNewArticle,
+  postNewTopic,
 };

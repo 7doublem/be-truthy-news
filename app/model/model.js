@@ -336,6 +336,46 @@ const insertArticle = (author, title, body, topic, article_img_url) => {
     });
 };
 
+const insertTopic = (slug, description, img_url) => {
+  if (!slug || !description || !img_url) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing one or more required fields",
+    });
+  }
+
+  if (
+    typeof slug !== "string" ||
+    typeof description !== "string" ||
+    typeof img_url !== "string"
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid data type for one or more fields",
+    });
+  }
+
+  return db
+    .query(
+      `INSERT INTO topics (slug, description, img_url)
+    VALUES ($1, $2, $3)
+    RETURNING *`,
+      [slug, description, img_url]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    })
+    .catch((err) => {
+      if (err.code === "23505") {
+        return Promise.reject({
+          status: 400,
+          msg: "Topic already exists",
+        });
+      }
+      return Promise.reject(err);
+    });
+};
+
 module.exports = {
   selectAllTopics,
   selectArticlesById,
@@ -348,4 +388,5 @@ module.exports = {
   selectUserByUsername,
   updateCommentById,
   insertArticle,
+  insertTopic,
 };
