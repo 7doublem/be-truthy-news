@@ -198,5 +198,9 @@
       "description": "A topic for testing purposes",
       "img_url": "https://example.com/image.jpg"
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "Deletes an article by its article_id. Also deletes all comments associated with the article. Returns 204 No Content if successful.",
+    "exampleResponse": {}
   }
 }
