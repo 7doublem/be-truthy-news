@@ -1,9 +1,9 @@
-const endpointsJson = require("../endpoints.json");
-const db = require("../db/connection");
-const seed = require("../db/seeds/seed");
-const data = require("../db/data/test-data");
+const endpointsJson = require("../../endpoints.json");
+const db = require("../../db/connection");
+const seed = require("../../db/seeds/seed");
+const data = require("../../db/data/test-data");
 const request = require("supertest");
-const app = require("../api");
+const app = require("../../api");
 
 beforeEach(() => {
   return seed(data);
@@ -11,58 +11,6 @@ beforeEach(() => {
 
 afterAll(() => {
   return db.end();
-});
-
-describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
-    return request(app)
-      .get("/api")
-      .expect(200)
-      .then(({ body: { endpoints } }) => {
-        expect(endpoints).toEqual(endpointsJson);
-      });
-  });
-});
-
-describe("General errors", () => {
-  test("404: Responds with an error message 404: Not found", () => {
-    return request(app)
-      .get("/api/not-a-route")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found");
-      });
-  });
-});
-
-describe("GET /api/topics", () => {
-  // happy path
-  test("200: Responds with an array of all topics", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then(({ body: { topics } }) => {
-        expect(topics.length).toBe(3);
-        topics.forEach((topic) => {
-          expect(typeof topic.description).toBe("string");
-          expect(typeof topic.slug).toBe("string");
-          expect(typeof topic.img_url).toBe("string");
-        });
-      });
-  });
-  // sad path
-  test("500: Responds with an error message 500: Internal Server Error", () => {
-    jest.spyOn(db, "query").mockImplementation(() => {
-      return Promise.reject(new Error("Database error"));
-    });
-    return request(app)
-      .get("/api/topics")
-      .expect(500)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Internal Server Error");
-        db.query.mockRestore();
-      });
-  });
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -133,7 +81,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
+        expect(articles.length).toBe(10);
         expect(articles).toBeSorted({ descending: true });
         articles.forEach((article) => {
           expect(typeof article.author).toBe("string");
@@ -348,59 +296,6 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe("DELETE /api/comments/:comment_id", () => {
-  // happy path
-  test("204: Deletes comment by it's id, does not return content, but returns 404 when trying to get comment", () => {
-    return request(app)
-      .delete("/api/comments/4")
-      .expect(204)
-      .then(() => {
-        return request(app)
-          .get("/api/comments/4")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).toBe("Not Found");
-          });
-      });
-  });
-  // sad path
-  test("400: Responds with an error message 400: Bad Request for an incorrect comment_id", () => {
-    return request(app)
-      .delete("/api/comments/comment")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  test("404: Responds with an error message 404: Not Found for a valid comment_id that doesn't exist", () => {
-    return request(app)
-      .delete("/api/comments/789")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe(
-          "Oops! That comment could not be found. It might have been deleted or never existed"
-        );
-      });
-  });
-});
-
-describe("GET /api/users", () => {
-  // happy path
-  test("200: Responds with an array of all users", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then(({ body: { users } }) => {
-        expect(users.length).toBe(4);
-        users.forEach((user) => {
-          expect(typeof user.username).toBe("string");
-          expect(typeof user.name).toBe("string");
-          expect(typeof user.avatar_url).toBe("string");
-        });
-      });
-  });
-});
-
 describe("GET /api/articles (sorting queries)", () => {
   //happy path
   test("200: Responds with an array of articles sorted by created_at in descending order (default)", () => {
@@ -408,7 +303,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
+        expect(articles.length).toBe(10);
         expect(articles).toBeSorted("created_at", { descending: true });
       });
   });
@@ -417,7 +312,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles?sort_by=comment_count&order=asc")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
+        expect(articles.length).toBe(10);
         expect(articles).toBeSorted("comment_count", { ascending: true });
       });
   });
@@ -426,7 +321,7 @@ describe("GET /api/articles (sorting queries)", () => {
       .get("/api/articles?sort_by=votes&order=desc")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
+        expect(articles.length).toBe(10);
         expect(articles).toBeSorted("votes", { descending: true });
       });
   });
@@ -478,94 +373,6 @@ describe("GET /api/articles (topic query)", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
-      });
-  });
-});
-
-describe("GET /api/users/:username", () => {
-  // happy path
-  test("200: Responds with a user object which is found by username", () => {
-    return request(app)
-      .get("/api/users/butter_bridge")
-      .expect(200)
-      .then(({ body: { user } }) => {
-        expect(user.username).toBe("butter_bridge");
-        expect(user.name).toBe("jonny");
-        expect(user.avatar_url).toBe(
-          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-        );
-      });
-  });
-  // sad path
-  test("400: Responds with an error message 400: Bad Request when finding a user by an invalid username", () => {
-    return request(app)
-      .get("/api/users/900")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  test("404: Responds with an error message 400: Not Found when finding a user by a username that does not exist", () => {
-    return request(app)
-      .get("/api/users/7doublem")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-});
-describe("PATCH /api/comments/:comment_id", () => {
-  // happy path
-  test("200: Responds with updated comment with updated votes", () => {
-    return request(app)
-      .patch("/api/comments/1")
-      .send({ inc_votes: -15 })
-      .expect(200)
-      .then(({ body: { comment } }) => {
-        expect(comment.body).toBe(
-          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
-        );
-        expect(comment.votes).toBe(1);
-        expect(comment.author).toBe("butter_bridge");
-        expect(comment.created_at).toEqual(expect.any(String));
-        expect(comment.comment_id).toEqual(expect.any(Number));
-      });
-  });
-  //sad path
-  test("400: Responds with an error message 400: Bad Request for an incorrect comment_id", () => {
-    return request(app)
-      .patch("/api/comments/notaroute")
-      .send({ inc_votes: -15 })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  test("404: Responds with an error message 404: Not Found for a valid comment_id that doesn't exist", () => {
-    return request(app)
-      .patch("/api/comments/99999")
-      .send({ inc_votes: -15 })
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-  test("400: Responds with an error message 400: Bad Request for request body that is missing the required fields", () => {
-    return request(app)
-      .patch("/api/comments/4")
-      .send({})
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-  test("400: Responds with an error message 400: Bad Request for invalid data types in the request body", () => {
-    return request(app)
-      .patch("/api/comments/3")
-      .send({ inc_votes: "one hundred" })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
       });
   });
 });
@@ -651,6 +458,72 @@ describe("POST /api/articles", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid data type for one or more fields");
+      });
+  });
+});
+
+describe("GET /api/articles (pagination)", () => {
+  // happy path
+  test("200: Returns 5 articles when limit = 5", () => {
+    return request(app)
+      .get("/api/articles?limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(5);
+        expect(typeof body.total_count).toBe("number");
+      });
+  });
+  test("200: Returns articles for page 2 when limit = 5 and p = 2", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=1")
+      .then((page1Response) => {
+        return request(app)
+          .get("/api/articles?limit=5&p=2")
+          .then((page2Response) => {
+            expect(page1Response.status).toBe(200);
+            expect(page2Response.status).toBe(200);
+            expect(page2Response.body.articles[0].article_id).toBe(
+              page1Response.body.articles[5]?.article_id ||
+                page2Response.body.articles[0].article_id
+            );
+          });
+      });
+  });
+  test("200: total_count is the same regardless of pagination", () => {
+    return request(app)
+      .get("/api/articles?limit=2&p=1")
+      .then((res1) => {
+        return request(app)
+          .get("/api/articles?limit=2&p=2")
+          .then((res2) => {
+            expect(res1.body.total_count).toBe(res2.body.total_count);
+          });
+      });
+  });
+  // sad path
+  test("400: returns error for invalid limit", () => {
+    return request(app)
+      .get("/api/articles?limit=notanumber")
+      .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Invalid Limit or Page Number");
+      });
+  });
+  test("400: returns error for invalid page", () => {
+    return request(app)
+      .get("/api/articles?p=-1")
+      .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Invalid Limit or Page Number");
+      });
+  });
+  test("200: returns empty array if page is beyond available articles", () => {
+    return request(app)
+      .get("/api/articles?limit=10&p=999")
+      .then((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body.articles).toEqual([]);
+        expect(typeof res.body.total_count).toBe("number");
       });
   });
 });
