@@ -11,7 +11,8 @@ const {
   selectUserByUsername,
   updateCommentById,
   insertArticle,
-  insertTopic
+  insertTopic,
+  deleteArticleById,
 } = require("../model/model");
 
 const getApi = (req, res, next) => {
@@ -152,6 +153,15 @@ const postNewTopic = (req, res, next) => {
     .catch(next);
 };
 
+const removeArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  return deleteArticleById(article_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+};
+
 module.exports = {
   getApi,
   getAllTopics,
@@ -167,4 +177,5 @@ module.exports = {
   patchCommentById,
   postNewArticle,
   postNewTopic,
+  removeArticleById
 };

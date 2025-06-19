@@ -376,6 +376,34 @@ const insertTopic = (slug, description, img_url) => {
     });
 };
 
+const deleteArticleById = (article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Oops! That article could not be found. It might have been deleted or never existed",
+        });
+      }
+      return db
+        .query(`DELETE FROM comments WHERE article_id = $1`, [article_id])
+        .then(() => {
+          return db.query(
+            `DELETE FROM articles WHERE article_id = $1 RETURNING *`,
+            [article_id]
+          );
+        });
+    })
+};
+
 module.exports = {
   selectAllTopics,
   selectArticlesById,
@@ -389,4 +417,5 @@ module.exports = {
   updateCommentById,
   insertArticle,
   insertTopic,
+  deleteArticleById,
 };
