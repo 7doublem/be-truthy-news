@@ -80,6 +80,10 @@
 ### POST `/api/topics`
 
 - Request body does not have the required fields (e.g. `{}`)
-
 - Request body has invalid data types (e.g. `{ slug: 123, description: false, img_url: [] }`)
 - Duplicate slug (topic with this slug already exists)
+
+### DELETE `/api/articles/:article_id`
+
+- Bad `article_id` (e.g. `/dog`)
+- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)

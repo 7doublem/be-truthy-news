@@ -591,3 +591,27 @@ describe("GET /api/articles/:article_id/comments (pagination)", () => {
       });
   });
 });
+
+describe("DELETE /api/articles/:article_id", () => {
+  test("204: deletes article by id", () => {
+    return request(app).delete("/api/articles/1").expect(204);
+  });
+  test("400: returns error for invalid article_id", () => {
+    return request(app)
+      .delete("/api/articles/notanumber")
+      .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: returns error for valid article_id that does not exist", () => {
+    return request(app)
+      .delete("/api/articles/999")
+      .then((res) => {
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe(
+          "Oops! That article could not be found. It might have been deleted or never existed"
+        );
+      });
+  });
+});

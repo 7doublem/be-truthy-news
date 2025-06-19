@@ -5,7 +5,8 @@ const {
   getCommentsByArticleId,
   postNewComment,
   patchArticleById,
-  postNewArticle
+  postNewArticle, 
+  removeArticleById,
 } = require("../app/controller/controller");
 const articlesRouter = express.Router();
 
@@ -26,5 +27,8 @@ articlesRouter.patch("/:article_id", patchArticleById);
 
 // post new article
 articlesRouter.post("/", postNewArticle);
+
+// delete article by article id
+articlesRouter.delete("/:article_id", removeArticleById);
 
 module.exports = articlesRouter;
