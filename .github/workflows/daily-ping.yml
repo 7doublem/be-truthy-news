@@ -1,0 +1,12 @@
+name: Ping API daily
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # run every day at 09:00 British Summer Time (BST)
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl Truthy News API
+        run: curl -I https://truthy-news.onrender.com/api
