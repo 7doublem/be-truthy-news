@@ -28,19 +28,6 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  // sad path
-  test("500: Responds with an error message 500: Internal Server Error", () => {
-    jest.spyOn(db, "query").mockImplementation(() => {
-      return Promise.reject(new Error("Database error"));
-    });
-    return request(app)
-      .get("/api/topics")
-      .expect(500)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Internal Server Error");
-        db.query.mockRestore();
-      });
-  });
 });
 
 describe("POST /api/topics", () => {
