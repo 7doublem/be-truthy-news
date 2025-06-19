@@ -1,6 +1,12 @@
 {
   "GET /api": {
-    "description": "Serves a JSON representation of all the available endpoints of the API"
+    "description": "Serves a JSON representation of all the available endpoints of the API",
+    "exampleResponse": {
+      "endpoints": {
+        "GET /api": { "description": "..." },
+        "GET /api/topics": { "description": "..." }
+      }
+    }
   },
 
   "GET /api/topics": {
@@ -76,7 +82,13 @@
   },
 
   "GET /api/articles/:article_id/comments": {
-    "description": "Serves an array of comments for the given article_id, with the most recent comments first",
+    "description": "Serves a paginated array of comments for the given article_id, with the most recent comments first. Supports pagination using 'limit' (number of comments per page, default: 10) and 'p' (page number, default: 1) as query parameters.",
+    "queries": [
+      {
+        "limit": "Limits the number of comments returned per page (default: 10)"
+      },
+      { "p": "Specifies the page number to return (default: 1)" }
+    ],
     "exampleResponse": {
       "comments": [
         {
@@ -126,7 +138,8 @@
   },
 
   "DELETE /api/comments/:comment_id": {
-    "description": "Deletes a comment by its comment_id. Returns no content."
+    "description": "Deletes a comment by its comment_id. Returns 204 No Content if successful.",
+    "exampleResponse": {}
   },
 
   "GET /api/users/:username": {
@@ -138,7 +151,7 @@
     }
   },
 
-  "PATCH /api/comment/:comment_id": {
+  "PATCH /api/comments/:comment_id": {
     "description": "Updates a comment's vote count by comment_id and returns the updated comment",
     "exampleRequest": {
       "inc_votes": -1
@@ -148,12 +161,12 @@
       "body": "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
       "votes": 6,
       "author": "grumpy19",
-      "created_at": 1577890920000
+      "created_at": "2020-11-22T11:13:00.000Z"
     }
   },
 
   "POST /api/articles": {
-    "description": "Posts a new article to the given article_id and returns the created comment object",
+    "description": "Posts a new article and returns the created article object",
     "exampleRequest": {
       "author": "tickle122",
       "title": "Beef Wellington, is it really fine dining?",

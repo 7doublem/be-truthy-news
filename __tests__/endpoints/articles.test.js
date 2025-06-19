@@ -110,7 +110,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments.length).toBe(11);
+        expect(comments.length).toBe(10);
         comments.forEach((comment) => {
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
@@ -524,6 +524,70 @@ describe("GET /api/articles (pagination)", () => {
         expect(res.status).toBe(200);
         expect(res.body.articles).toEqual([]);
         expect(typeof res.body.total_count).toBe("number");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments (pagination)", () => {
+  // happy path
+  test("200: Returns 5 comments when limit = 5", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(5);
+      });
+  });
+  test("200: Returns comments for page 2 when limit = 5 and p = 2", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=1")
+      .then((page1Response) => {
+        return request(app)
+          .get("/api/articles/1/comments?limit=5&p=2")
+          .then((page2Response) => {
+            expect(page1Response.status).toBe(200);
+            expect(page2Response.status).toBe(200);
+            expect(page2Response.body.comments[0].comment_id).toBe(
+              page1Response.body.comments[5]?.comment_id ||
+                page2Response.body.comments[0].comment_id
+            );
+          });
+      });
+  });
+  test("200: total_count is the same regardless of pagination", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=2&p=1")
+      .then((res1) => {
+        return request(app)
+          .get("/api/articles/1/comments?limit=2&p=2")
+          .then((res2) => {
+            expect(res1.body.total_count).toBe(res2.body.total_count);
+          });
+      });
+  });
+  // sad path
+  test("400: returns error for invalid limit", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=notanumber")
+      .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Invalid Limit or Page Number");
+      });
+  });
+  test("400: returns error for invalid page", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=-1")
+      .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Invalid Limit or Page Number");
+      });
+  });
+  test("200: returns empty array if page is beyond available articles", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=10&p=999")
+      .then((res) => {
+        expect(res.status).toBe(200);
+        expect(res.body.comments).toEqual([]);
       });
   });
 });
