@@ -30,8 +30,8 @@ const selectAllArticles = (
   sort_by = "created_at",
   order = "desc",
   topic,
-  limit = 10,
-  page = 1
+  parsedLimit,
+  parsedPage
 ) => {
   const allowedSorts = [
     "title",
@@ -83,11 +83,11 @@ const selectAllArticles = (
 
   queryStr += ` ORDER BY ${sort_by_inc_cc} ${order.toUpperCase()}`;
 
-  const offset = (page - 1) * limit;
+  const offset = (parsedPage - 1) * parsedLimit;
   queryStr += ` LIMIT $${queryValues.length + 1} OFFSET $${
     queryValues.length + 2
   }`;
-  queryValues.push(limit, offset);
+  queryValues.push(parsedLimit, offset);
 
   if (topic) {
     return checkExists("topics", "slug", topic).then(() => {
@@ -105,30 +105,26 @@ const selectAllArticles = (
   });
 };
 
-const selectCommentsByArticleId = (article_id) => {
-  return db
-    .query(
-      `SELECT * FROM articles
-    WHERE article_id = $1`,
-      [article_id]
-    )
-    .then((articleResult) => {
-      if (articleResult.rows.length === 0) {
+const selectCommentsByArticleId = (article_id, parsedLimit, parsedPage) => {
+  return checkExists("articles", "article_id", article_id)
+    .catch((err) => {
+      if (err.status === 404) {
         return Promise.reject({
           status: 404,
           msg: "Oops! That article could not be found. It might have been deleted or never existed",
         });
       }
-      return db
-        .query(
-          `SELECT * FROM comments
-        WHERE article_id = $1
-        ORDER BY created_at DESC`,
-          [article_id]
-        )
-        .then((commentResult) => {
-          return commentResult.rows;
-        });
+      return Promise.reject(err);
+    })
+    .then(() => {
+      const offset = (parsedPage - 1) * parsedLimit;
+      return db.query(
+        `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3;`,
+        [article_id, parsedLimit, offset]
+      );
+    })
+    .then(({ rows }) => {
+      return rows;
     });
 };
 

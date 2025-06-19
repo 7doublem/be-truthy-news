@@ -57,7 +57,20 @@ const getAllArticles = (req, res, next) => {
 
 const getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  return selectCommentsByArticleId(article_id)
+  const { limit = 10, p = 1 } = req.query;
+  const parsedLimit = parseInt(limit, 10);
+  const parsedPage = parseInt(p, 10);
+
+  if (
+    isNaN(parsedLimit) ||
+    isNaN(parsedPage) ||
+    parsedLimit <= 0 ||
+    parsedPage <= 0
+  ) {
+    return res.status(400).send({ msg: "Invalid Limit or Page Number" });
+  }
+  
+  return selectCommentsByArticleId(article_id, limit, p)
     .then((comments) => {
       res.status(200).send({ comments });
     })
