@@ -18,13 +18,17 @@
   },
 
   "GET /api/articles": {
-    "description": "Serves an array of all articles, including a comment_count property. Supports sorting, ordering, and filtering by topic",
+    "description": "Serves a paginated array of all articles, each including a comment_count property. Supports sorting, ordering, filtering by topic, and pagination using 'limit' and 'p' (page) queries. Responds with a total_count property showing the total number of articles matching any filters, regardless of pagination.",
     "queries": [
       {
         "sort_by": "Sorts articles by a column (e.g., 'created_at', 'votes', 'comment_count')"
       },
       { "order": "Specifies sort order: 'asc' or 'desc'" },
-      { "topic": "Filters articles by a given topic" }
+      { "topic": "Filters articles by a given topic" },
+      {
+        "limit": "Limits the number of articles returned per page (default: 10)"
+      },
+      { "p": "Specifies the page number to return (default: 1)" }
     ],
     "exampleResponse": {
       "articles": [
@@ -38,7 +42,8 @@
           "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
           "comment_count": 12
         }
-      ]
+      ],
+      "total_count": 12
     }
   },
 
