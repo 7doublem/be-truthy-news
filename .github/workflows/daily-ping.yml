@@ -1,6 +1,7 @@
 name: Ping API daily
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '10 15 * * *'  # 15:10 UTC = 16:10 London (BST)
 
