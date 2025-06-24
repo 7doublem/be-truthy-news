@@ -204,7 +204,6 @@ curl https://truthy-news.onrender.com/api/articles
       "votes": 100,
       "comment_count": 5
     }
-    // ...
   ]
 }
 ```
