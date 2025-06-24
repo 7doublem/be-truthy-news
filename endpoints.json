@@ -11,7 +11,6 @@
 
   "GET /api/topics": {
     "description": "Serves an array of all topics",
-    "queries": [],
     "exampleResponse": {
       "topics": [
         {
@@ -69,15 +68,17 @@
   "GET /api/articles/:article_id": {
     "description": "Serves a specific article object for the given article_id, including a comment_count property",
     "exampleResponse": {
-      "article_id": 1,
-      "title": "Running a Node App",
-      "topic": "coding",
-      "author": "jessjelly",
-      "body": "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
-      "created_at": "2020-11-07T06:03:00.000Z",
-      "votes": 0,
-      "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
-      "comment_count": 7
+      "article": {
+        "article_id": 1,
+        "title": "Running a Node App",
+        "topic": "coding",
+        "author": "jessjelly",
+        "body": "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+        "created_at": "2020-11-07T06:03:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
+        "comment_count": 7
+      }
     }
   },
 
@@ -125,15 +126,17 @@
       "inc_votes": 100
     },
     "exampleResponse": {
-      "article_id": 1,
-      "title": "Running a Node App",
-      "topic": "coding",
-      "author": "jessjelly",
-      "body": "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
-      "created_at": "2020-11-07T06:03:00.000Z",
-      "votes": 100,
-      "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
-      "comment_count": 7
+      "article": {
+        "article_id": 1,
+        "title": "Running a Node App",
+        "topic": "coding",
+        "author": "jessjelly",
+        "body": "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+        "created_at": "2020-11-07T06:03:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700",
+        "comment_count": 7
+      }
     }
   },
 
@@ -145,9 +148,11 @@
   "GET /api/users/:username": {
     "description": "Serves a user object for the given username",
     "exampleResponse": {
-      "username": "tickle122",
-      "name": "Tom Tickle",
-      "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+      "user": {
+        "username": "tickle122",
+        "name": "Tom Tickle",
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+      }
     }
   },
 
@@ -157,11 +162,14 @@
       "inc_votes": -1
     },
     "exampleResponse": {
-      "article_title": "Making sense of Redux",
-      "body": "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
-      "votes": 6,
-      "author": "grumpy19",
-      "created_at": "2020-11-22T11:13:00.000Z"
+      "comment": {
+        "comment_id": 1,
+        "article_id": 18,
+        "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+        "votes": -1,
+        "author": "tickle122",
+        "created_at": "2020-05-21T23:19:00.000Z"
+      }
     }
   },
 
@@ -175,17 +183,20 @@
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     },
     "exampleResponse": {
-      "article_id": 38,
-      "title": "Beef Wellington, is it really fine dining?",
-      "topic": "cooking",
-      "author": "tickle122",
-      "body": "Beef Wellingtons, while often presented as luxurious, aren't inherently fine dining—they're more of a hearty, rustic showpiece wrapped in puff pastry.",
-      "created_at": "2025-05-27T20:51:00.000Z",
-      "votes": 0,
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      "comment_count": 0
+      "article": {
+        "article_id": 38,
+        "title": "Beef Wellington, is it really fine dining?",
+        "topic": "cooking",
+        "author": "tickle122",
+        "body": "Beef Wellingtons, while often presented as luxurious, aren't inherently fine dining—they're more of a hearty, rustic showpiece wrapped in puff pastry.",
+        "created_at": "2025-05-27T20:51:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        "comment_count": 0
+      }
     }
   },
+
   "POST /api/topics": {
     "description": "Posts a new topic and returns the created topic object. Requires 'slug', 'description', and 'img_url' in the request body.",
     "exampleRequest": {
@@ -194,11 +205,14 @@
       "img_url": "https://example.com/image.jpg"
     },
     "exampleResponse": {
-      "slug": "test-topic",
-      "description": "A topic for testing purposes",
-      "img_url": "https://example.com/image.jpg"
+      "topic": {
+        "slug": "test-topic",
+        "description": "A topic for testing purposes",
+        "img_url": "https://example.com/image.jpg"
+      }
     }
   },
+
   "DELETE /api/articles/:article_id": {
     "description": "Deletes an article by its article_id. Also deletes all comments associated with the article. Returns 204 No Content if successful.",
     "exampleResponse": {}

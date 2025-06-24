@@ -1,15 +1,42 @@
 # Truthy News API
 
-## Truthy News™ © 2025 - Powered by 100% truthy news, no falsy headlines here.
+![Test & Deploy](https://github.com/7doublem/be-truthy-news/actions/workflows/test-and-deploy.yml/badge.svg)
+![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)
+![Node version](https://img.shields.io/badge/node-%3E=23-brightgreen)
 
-This is the backend project for a Reddit-style news application. This is a RESTful API built using Node.js, Express.js and PostgreSQL. It is designed to power a frontend news application. You can fetch articles, users, topics and comments and filter by topic or sort articles by things like date, author or votes.
+## Truthy News™ © 2025 — Powered by 100% truthy news, no falsy headlines here.
+
+This is the backend project for a Reddit-style news application. This RESTful API, built with Node.js, Express.js, and PostgreSQL, powers a frontend news app and provides features such as:
+
+- Fetching API documentation
+- Fetching, creating, updating (votes), and deleting articles
+- Fetching and creating topics
+- Fetching, creating, updating (votes), and deleting comments
+- Fetching users and user details
+- Advanced filtering, sorting, and pagination for articles and comments
+- Robust error handling for all endpoints
+
+---
+
+## Table of Contents
+
+- [Hosted Version](#hosted-version)
+- [Project Summary](#project-summary)
+- [Getting Started Locally](#getting-started-locally)
+- [Linting & Formatting](#linting--formatting)
+- [Minimum Versions](#minimum-versions)
+- [Tech Stack](#tech-stack)
+- [API Documentation](#api-documentation)
+- [Example Requests](#example-requests)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
 ## Hosted Version
 
-You can try out the live API right now:
-**[https://truthy-news.onrender.com](https://truthy-news.onrender.com)**
+Try out the live API:  
+**[https://truthy-news.onrender.com/api](https://truthy-news.onrender.com/api)**
 
 ---
 
@@ -17,27 +44,36 @@ You can try out the live API right now:
 
 This API interacts with a PostgreSQL database to offer:
 
-- Fetching articles, users, topics, and comments
-- Filtering articles by topic
-- Sorting and ordering articles dynamically
-- Posting new comments
-- Updating vote counts
-- Deleting comments
-- Error handling for all edge cases
+- Fetching API documentation (/api)
+- Fetching all topics
+- Fetching all articles with filtering, sorting, ordering, and pagination
+- Fetching a single article by ID
+- Posting new articles
+- Posting new topics
+- Updating article vote counts
+- Deleting articles by ID
+- Fetching comments for an article with pagination
+- Posting new comments to articles
+- Updating comment vote counts
+- Deleting comments by ID
+- Fetching all users and user details by username
+- Robust validation and error handling
+
+---
 
 ## Getting Started Locally
 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/be-truthy-news.git
+git clone https://github.com/7doublem/be-truthy-news.git
 cd be-truthy-news
 npm install
 ```
 
 ### 2. Environment Setup
 
-Before you can run the app locally, you need to create two `.env` files in the root directory of the project. These files will tell your app which local PostgreSQL database to connect to.
+Create two `.env` files in the root directory:
 
 #### `.env.development`
 
@@ -51,15 +87,13 @@ PGDATABASE=truthy_news
 PGDATABASE=truthy_news_test
 ```
 
-Your app uses dotenv to read these files and set the environment variables automatically when you run it. This ensures the correct database is used when seeding or testing.
-
-### 3. Setup the database
+### 3. Setup the Database
 
 ```bash
 npm run setup-dbs
 ```
 
-### 4. Seed the database
+### 4. Seed the Database
 
 To seed the development database:
 
@@ -67,13 +101,19 @@ To seed the development database:
 npm run seed-dev
 ```
 
-To run the production database:
+To seed the production database:
 
 ```bash
 npm run seed-prod
 ```
 
-### 5. Run the server
+### 5. Run the Server
+
+```bash
+npm start
+```
+
+or
 
 ```bash
 node listen.js
@@ -89,25 +129,94 @@ Uses Jest and Supertest to test endpoints, including sad paths and edge cases.
 
 ---
 
+## Linting & Formatting
+
+To lint your code:
+
+```bash
+npm run lint
+```
+
+To auto-format your code:
+
+```bash
+npm run format
+```
+
+---
+
 ## Minimum Versions
 
-- **Node.js**: v23
-- **PostgreSQL**: v14
+<p>
+  <img src="https://img.shields.io/badge/node-%3E=23-brightgreen?logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/postgresql-%3E=14-blue?logo=postgresql&logoColor=white" alt="PostgreSQL" />
+</p>
 
 ---
 
 ## Tech Stack
 
-- Node.js
-- Express
-- PostgreSQL
-- pg-format
-- dotenv
-- Jest
-- Supertest
+<p>
+  <img src="https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white&style=for-the-badge" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white&style=for-the-badge" alt="Express.js" />
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white&style=for-the-badge" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/pg-4169E1?style=for-the-badge" alt="pg" />
+  <img src="https://img.shields.io/badge/pg--format-008bb9?style=for-the-badge" alt="pg-format" />
+  <img src="https://img.shields.io/badge/dotenv-8DD6F9?logo=dotenv&logoColor=white&style=for-the-badge" alt="dotenv" />
+  <img src="https://img.shields.io/badge/cors-003366?style=for-the-badge" alt="cors" />
+  <img src="https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=white&style=for-the-badge" alt="Jest" />
+  <img src="https://img.shields.io/badge/jest--extended-2b2b2b?style=for-the-badge" alt="jest-extended" />
+  <img src="https://img.shields.io/badge/jest--sorted-2b2b2b?style=for-the-badge" alt="jest-sorted" />
+  <img src="https://img.shields.io/badge/Supertest-333333?style=for-the-badge" alt="Supertest" />
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white&style=for-the-badge" alt="ESLint" />
+  <img src="https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=white&style=for-the-badge" alt="Prettier" />
+  <img src="https://img.shields.io/badge/Husky-7C3AED?style=for-the-badge" alt="Husky" />
+</p>
 
 ---
 
-## Final Notes
+## API Documentation
 
-- API documentation available via `/api` endpoint on the hosted version.
+- Visit [`/api`](https://truthy-news.onrender.com/api) for a full list of endpoints and example responses.
+
+---
+
+## Example Requests
+
+### Fetch all articles
+
+```bash
+curl https://truthy-news.onrender.com/api/articles
+```
+
+**Response:**
+
+```json
+{
+  "articles": [
+    {
+      "article_id": 1,
+      "title": "Running a Node App",
+      "topic": "coding",
+      "author": "jessjelly",
+      "body": "...",
+      "created_at": "2025-06-21T12:34:56.000Z",
+      "votes": 100,
+      "comment_count": 5
+    }
+    // ...
+  ]
+}
+```
+
+---
+
+## License
+
+This project is licensed under the ISC License.
+
+---
+
+## Contact
+
+Created by [7doublem](https://github.com/7doublem) — feel free to reach out!
