@@ -4,7 +4,7 @@
 ![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)
 ![Node version](https://img.shields.io/badge/node-%3E=23-brightgreen)
 
-## Truthy News™ © 2025 — Powered by 100% truthy news, no falsy headlines here.
+## Truthy News™ © 2025 - Powered by 100% truthy news, no falsy headlines here.
 
 This is the backend project for a Reddit-style news application. This RESTful API, built with Node.js, Express.js, and PostgreSQL, powers a frontend news app and provides features such as:
 
@@ -218,4 +218,4 @@ This project is licensed under the ISC License.
 
 ## Contact
 
-Created by [7doublem](https://github.com/7doublem) — feel free to reach out!
+Created by [7doublem](https://github.com/7doublem) - feel free to reach out!
